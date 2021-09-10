@@ -41,5 +41,5 @@ with pd.ExcelWriter('miRNA_output_table.xlsx', mode='w') as out_table:
                                    'Gene_Desciption': [list_[5]]})
             pd_df = pd_df.append(pd_df1, ignore_index=True)
         pd_df.to_excel(out_table, engine='xlsxwriter')
-        print(f"{num}/{len(in_values)}")    
+        print(f"{num}/{len(in_values)}", end='\r')    
 print('Done!')
