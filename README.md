@@ -4,9 +4,11 @@
  is a Python script that collects certain information from open miRNA databases (miRDB) and writes it to the outfile (.xlsx).
 ## How to install
 To run this script you need to have an installed [Python 3](https://www.python.org/downloads/). Place the .py script and .xlsx file in the
-same directory. Run from CLI (python miRNA_DB_Parser.py)
+same directory. 
 
-Following modules:
+Run from CLI (python miRNA_DB_Parser.py)
+
+### Requested modules:
 
 -[pandas](https://pandas.pydata.org/docs/getting_started/install.html)
 
