@@ -13,4 +13,6 @@ Following modules:
 
 -[requests](https://pypi.org/project/requests/)
 
+-[openpyxl](https://openpyxl.readthedocs.io/en/stable/#installation)
+
 
