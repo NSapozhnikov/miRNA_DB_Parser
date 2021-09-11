@@ -1,5 +1,5 @@
 # miRNA_DB_Parser
-## 9.10.2021
+## 9.11.2021
 ## miRNA_DB_Parser
  is a Python script that collects certain information from open miRNA databases (miRDB) and writes it to the outfile (.xlsx).
 ## How to install
