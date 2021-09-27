@@ -118,13 +118,13 @@ with pd.ExcelWriter('TargetScan_output_table.xlsx') as writer:
         except ConnectionError:
             print(f"Connection error for {miRNA}. Skipping...")
         finally:
-            time.sleep(0.5)
+            time.sleep(1)
         print(f"{num}/{len(in_values)}", end='\n')
     time_end = datetime.datetime.now()
-    print('No rows were added for this list of miRNA\'s: ')
+    print('\nNo rows were added for this list of miRNA\'s: ')
     for k in empty_table:
         print(k, end=' ')
-    print('No page or downloadable link has been found for: ')
+    print('\nNo page or downloadable link has been found for: ')
     for i in no_page:
         print(i, end=' ')
     for j in no_table:
