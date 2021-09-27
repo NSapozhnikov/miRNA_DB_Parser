@@ -103,17 +103,17 @@ with pd.ExcelWriter('TargetScan_output_table.xlsx') as writer:
             pd_df.loc[:, 'miRNA'] = miRNA                                                                       ### adding the requested miRNA
             print(f"Adding {len(pd_df.index)} rows for {miRNA}...")                                                                   
             if len(pd_df.index) == 0:
-                empty_table = empty_table.append(miRNA)                                                        
+                empty_table.append(miRNA)                                                        
 
             pd_df.to_excel(writer, sheet_name='TargetScan', header=False, index=False, startrow=max_row)      ### write to the outfile
             os.remove(f"{miRNA}_output.xlsx")                                                   ### delete downloaded file
             max_row += len(pd_df.index)
             
         except AttributeError:
-            no_page = no_page.append(miRNA)
+            no_page.append(miRNA)
             print(f"No {miRNA} was found in TargetScan DB... Skipping...")                       ### if None info was found for this miRNA
         except IndexError:
-            no_table = no_table.append(miRNA)
+            no_table.append(miRNA)
             print(f"No downloadable table was found for {miRNA}... Skipping...")                ### no download link is found
         except ConnectionError:
             print(f"Connection error for {miRNA}. Skipping...")
