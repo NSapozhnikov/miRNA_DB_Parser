@@ -5,6 +5,7 @@
 ## TargetScan_DB_Parser
  TargetScan_DB_Parser.py downloads .xlsx file from TargetScan site for each miRNA in the input file to its directory, and after appending
  its content deletes each downloaded file. 
+ 
  This method has been chosen due to bad HTML markup of TargetScan web site and impossibility to use any SQL databases.
 
 ### Requested modules:
