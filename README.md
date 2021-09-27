@@ -3,8 +3,8 @@
 
 This project is a set Python scripts that collect certain information from open miRNA databases (miRDB, TargetScan) via WebScrapping and write it to the (.xlsx) outfiles.
 
-## miRNA_DB_Parser
- miRNA_DB_Parser is a Python script that collects certain information from open miRNA databases (miRDB) and writes it to the outfile (.xlsx).
+## miRDB_Parser
+ miRDB_Parser uses POST method (with reasonable frequency) to collect data from miRDB web site and write it to outfile.
 ## TargetScan_DB_Parser
  TargetScan_DB_Parser.py downloads .xlsx file from TargetScan site for each miRNA in the input file to its directory, and after appending
  its content deletes each downloaded file. 
