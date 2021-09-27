@@ -13,15 +13,43 @@ print (f"\nTime of start - {time_start.isoformat(sep=' ', timespec='seconds')}")
 with pd.ExcelWriter('TargetScan_output_table.xlsx') as writer:
     print('Writing to the outfile...')
     pd_df = pd.DataFrame({'miRNA': [],                                                       ### output file creation + header printing
-                          'Gene_Symbol': [],
-                          'Gene_Desciption': [],
+                          'Ortholog of target gene': [],
+                          'Gene name': [],
+                          '3P-seq tags + 5': [],
+                          'Conservative total sites': [],
+                          'Conserved 8mer sites': [],
+                          'Conserved 7mer-m8 sites': [],
+                          'Conserved 7mer-A1 sites': [],
+                          'Poorly conserved sites total': [],
+                          'Poorly conserved 8mer sites': [],
+                          'Poorly conserved 7mer-m8 sites': [],
+                          'Poorly conserved 7mer-A1 sites': [],
+                          '6mer sites': [],
+                          'Representative miRNA': [],
+                          'Cumulative weighted context++ score': [],
                           'Target total context++ score': []})
-    pd_df.to_excel(writer, sheet_name='TargetScan', header=False, index=False)
+    pd_df.to_excel(writer, sheet_name='TargetScan', header=True, index=False)
     
-in_values = pd.read_excel('derg_de_mirna.xlsx', sheet_name='Ls - Lsk')['name']
+in_values = pd.read_excel('total_m_mi.xlsx', sheet_name='total miRNA')['miRNA']
 num = 0
 for miRNA in in_values:
     num +=1
+    pd_df = pd.DataFrame({'miRNA': [],                                                       
+                          'Ortholog of target gene': [],
+                          'Gene name': [],
+                          '3P-seq tags + 5': [],
+                          'Conservative total sites': [],
+                          'Conserved 8mer sites': [],
+                          'Conserved 7mer-m8 sites': [],
+                          'Conserved 7mer-A1 sites': [],
+                          'Poorly conserved sites total': [],
+                          'Poorly conserved 8mer sites': [],
+                          'Poorly conserved 7mer-m8 sites': [],
+                          'Poorly conserved 7mer-A1 sites': [],
+                          '6mer sites': [],
+                          'Representative miRNA': [],
+                          'Cumulative weighted context++ score': [],
+                          'Target total context++ score': []})
     try:
         url_TargetScan = f"""http://www.targetscan.org/cgi-bin/targetscan/vert_72/targetscan.cgi?species=Rat&gid=&mir_sc=&mir_c=&mir_nc=&mir_vnc=&mirg={miRNA}"""
         resp = requests.get(url_TargetScan)                                                 ### GET the main URL page for this miRNA
@@ -37,20 +65,54 @@ for miRNA in in_values:
         download_table = requests.get(url_download_link_2)                                  ### downloading .xlsx table for the miRNA
         open(f"{miRNA}_output.xlsx", 'wb').write(download_table.content)
         
-        pd_df = pd.read_excel(f"{miRNA}_output.xlsx")
-        pd_df = pd_df.loc[pd_df['Total context++ score']<= -0.5]                            ### filter for score values
+        pd_df1 = pd.read_excel(f"{miRNA}_output.xlsx")
+        pd_df1 = pd_df1.drop(columns=['Representative transcript'])                            ### drop useless columns
+        pd_df1 = pd_df1.loc[pd_df1['Total context++ score']<= -0.5]                            ### filter for score values
+        if len(pd_df1.columns) == 17:
+            pd_df['Ortholog of target gene'] = pd_df1['Ortholog of target gene']
+            pd_df['Gene name'] = pd_df1['Gene name']
+            pd_df['3P-seq tags + 5'] = pd_df1['3P-seq tags + 5']
+            pd_df['Conservative total sites'] = pd_df1['Conserved sites total']
+            pd_df['Conserved 8mer sites'] = pd_df1['Conserved 8mer sites']
+            pd_df['Conserved 7mer-m8 sites'] = pd_df1['Conserved 7mer-m8 sites']
+            pd_df['Conserved 7mer-A1 sites'] = pd_df1['Conserved 7mer-A1 sites']
+            pd_df['Poorly conserved sites total'] = pd_df1['Poorly conserved sites total']
+            pd_df['Poorly conserved 8mer sites'] = pd_df1['Poorly conserved 8mer sites']
+            pd_df['Poorly conserved 7mer-m8 sites'] = pd_df1['Poorly conserved 7mer-m8 sites']
+            pd_df['Poorly conserved 7mer-A1 sites'] = pd_df1['Poorly conserved 7mer-A1 sites']
+            pd_df['6mer sites'] = pd_df1['6mer sites']
+            pd_df['Representative miRNA'] = pd_df1['Representative miRNA']
+            pd_df['Cumulative weighted context++ score'] = pd_df1['Cumulative weighted context++ score']
+            pd_df['Target total context++ score'] = pd_df1['Total context++ score']                         ### adding content for large tables
+        elif len(pd_df1.columns) == 12:
+            pd_df['Ortholog of target gene'] = pd_df1['Ortholog of target gene']
+            pd_df['Gene name'] = pd_df1['Gene name']
+            pd_df['3P-seq tags + 5'] = pd_df1['3P-seq tags + 5']
+            pd_df['Conservative total sites'] = pd_df1['Total sites']
+            pd_df['Conserved 8mer sites'] = pd_df1['8mer sites']
+            pd_df['Conserved 7mer-m8 sites'] = pd_df1['7mer-m8 sites']
+            pd_df['Conserved 7mer-A1 sites'] = pd_df1['7mer-A1 sites']     
+            pd_df['6mer sites'] = pd_df1['6mer sites']
+            pd_df['Representative miRNA'] = pd_df1['Representative miRNA']
+            pd_df['Cumulative weighted context++ score'] = pd_df1['Cumulative weighted context++ score']
+            pd_df['Target total context++ score'] = pd_df1['Total context++ score']                         ### adding content for small tables            
+        pd_df.loc[:, 'miRNA'] = miRNA                                                                       ### adding the requested miRNA 
         
         with pd.ExcelWriter('TargetScan_output_table.xlsx', engine='openpyxl', mode='a') as writer:
             book = load_workbook('TargetScan_output_table.xlsx')
             writer.book = book
             writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
             sheet = book.active
-            pd_df.to_excel(writer, sheet_name='TargetScan', header=True, index=False, startrow=sheet.max_row+1)      ### writing to the outfile
+            pd_df.to_excel(writer, sheet_name='TargetScan', header=False, index=False, startrow=sheet.max_row)      ### write to the outfile
             book.save('TargetScan_output_table.xlsx')
-        os.remove(f"{miRNA}_output.xlsx")                                                   ### deleting downloaded file
+        os.remove(f"{miRNA}_output.xlsx")                                                   ### delete downloaded file
         
-    except AttributeError:                                                                  ### if None info was found for this miRNA
-        continue
+    except AttributeError:
+        print(f"No {miRNA} was found in TargetScan DB... Skipping...")                       ### if None info was found for this miRNA
+    except IndexError:
+        print(f"No downloadable table was found for {miRNA}... Skipping...")                ### no download link is found
+    except ConnectionError:
+        print(f"Connection error for {miRNA}. Skipping...")
     finally:
         time.sleep(0.5)
     print(f"{num}/{len(in_values)}", end='\r')
